@@ -1,0 +1,2 @@
+/* Keep the entrance motion/timing, while letting the editorial hero be the first visible frame. */
+.library-doors{background:transparent;opacity:1;visibility:visible}.library-doors.is-open{visibility:hidden}.library-doors .door,.library-doors .door-instruction{opacity:0}.hero{min-height:100svh}

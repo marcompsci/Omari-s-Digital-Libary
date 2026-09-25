@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recommend a Book — Omari's Digital Library</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="recommend.css" />
+  <link rel="stylesheet" href="meganeura.css" />
+  <link rel="stylesheet" href="meganeura-v2.css" />
+  <link rel="stylesheet" href="meganeura-foreground.css" />
+  <link rel="stylesheet" href="frog.css" />
+  <link rel="stylesheet" href="frog-v2.css" />
+  <link rel="stylesheet" href="pets-visible.css" />
+  <link rel="stylesheet" href="pet-fallback.css" />
+  <link rel="stylesheet" href="meganeura-digital-pet.css" />
+  <link rel="stylesheet" href="meganeura-image.css" />
+  <link rel="stylesheet" href="frog-pet.css" />
+  <link rel="stylesheet" href="pet-engine.css" />
+  <link rel="stylesheet" href="pet-assets.css" />
+</head>
+<body>
+  <header class="recommend-header"><a class="wordmark" href="index.html">ODL</a><p>Share a title / expand the archive</p><a class="back" href="index.html">← Back to library</a></header>
+  <main>
+    <section class="recommend-hero">
+      <p class="eyebrow">Reader’s note</p>
+      <h1>Leave a book<br><em>on my shelf.</em></h1>
+      <p>Tell me about a book worth making time for. Your recommendation will take its place on the floating shelf below.</p>
+    </section>
+    <section class="form-section" aria-label="Book recommendation form">
+      <form id="recommendForm">
+        <label>Book title<input name="title" required maxlength="90" placeholder="The book you would recommend" /></label>
+        <label>Author<input name="author" required maxlength="70" placeholder="Who wrote it?" /></label>
+        <label>Why should I read it?<textarea name="note" maxlength="220" placeholder="A short note is plenty."></textarea></label>
+        <button type="submit">Add to the shelf <span>→</span></button>
+        <p class="form-message" id="formMessage" aria-live="polite"></p>
+      </form>
+    </section>
+    <section class="reader-shelf-section">
+      <div class="heading-row"><p class="eyebrow">Recommended by readers</p><p id="shelfCount">0 titles waiting</p></div>
+      <div class="reader-shelf" id="readerShelf" aria-live="polite"></div>
+      <div class="hover-shelf"><span></span></div>
+      <p class="shelf-caption">A small shelf, hovering patiently.</p>
+    </section>
+  </main>
+  <div class="pet-dock" aria-hidden="true">
+    <div class="dock-meganeura meganeura"><i class="wing wing-one"></i><i class="wing wing-two"></i><i class="wing wing-three"></i><i class="wing wing-four"></i><i class="head"></i><i class="body"></i></div>
+    <div class="dock-frog library-frog"><i class="frog-leg frog-leg-left"></i><i class="frog-leg frog-leg-right"></i><i class="frog-body"></i><i class="frog-belly"></i><i class="frog-eye frog-eye-left"></i><i class="frog-eye frog-eye-right"></i><i class="frog-smile"></i></div>
+  </div>
+  <script src="recommend.js"></script>
+  <script src="pet-engine.js"></script>
+</body>
+</html>

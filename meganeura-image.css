@@ -1,0 +1,1 @@
+.digital-pet{--pet-size:150px;height:auto}.digital-pet img{display:block;width:100%;height:auto;pointer-events:none;mix-blend-mode:screen;filter:drop-shadow(0 0 7px #00e5d899) drop-shadow(0 0 18px #00b8ff55)}.digital-pet .pet-glow{left:20%;top:42%;width:60%;height:25%;background:#00fff04d;filter:blur(20px)}@media(max-width:600px){.digital-pet{--pet-size:112px}}
