@@ -4,8 +4,8 @@ const form = document.querySelector('#recommendForm');
 const shelf = document.querySelector('#readerShelf');
 const message = document.querySelector('#formMessage');
 
-function getBooks() { return JSON.parse(localStorage.getItem(storageKey) || '[]'); }
-function saveBooks(books) { localStorage.setItem(storageKey, JSON.stringify(books)); }
+function getBooks() { try { const saved = JSON.parse(localStorage.getItem(storageKey) || '[]'); return Array.isArray(saved) ? saved.slice(0, 50) : []; } catch { return []; } }
+function saveBooks(books) { localStorage.setItem(storageKey, JSON.stringify(books.slice(0, 50))); }
 function render() {
   const books = getBooks();
   document.querySelector('#shelfCount').textContent = `${books.length} ${books.length === 1 ? 'title waiting' : 'titles waiting'}`;
@@ -15,7 +15,8 @@ function escapeHtml(value) { return value.replace(/[&<>'"]/g, char => ({'&':'&am
 form.addEventListener('submit', event => {
   event.preventDefault();
   const fields = new FormData(form);
-  const title = fields.get('title').trim(), author = fields.get('author').trim(), note = fields.get('note').trim();
+  const clean = (value, limit) => String(value || '').trim().replace(/[\u0000-\u001F\u007F]/g, '').slice(0, limit);
+  const title = clean(fields.get('title'), 90), author = clean(fields.get('author'), 70), note = clean(fields.get('note'), 220);
   if (!title || !author) return;
   const books = getBooks();
   books.push({ title, author, note });
