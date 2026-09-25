@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Omari's carefully curated digital library." />
+  <title>Omari's Digital Library</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="book-extras.css" />
+  <link rel="stylesheet" href="library-doors.css" />
+  <link rel="stylesheet" href="library-doors-v2.css" />
+  <link rel="stylesheet" href="invisible-door-transition.css" />
+  <link rel="stylesheet" href="shelf-entry.css" />
+  <link rel="stylesheet" href="hero-actions.css" />
+  <link rel="stylesheet" href="domino-shelf.css" />
+  <link rel="stylesheet" href="meganeura.css" />
+  <link rel="stylesheet" href="meganeura-v2.css" />
+  <link rel="stylesheet" href="meganeura-foreground.css" />
+  <link rel="stylesheet" href="frog.css" />
+  <link rel="stylesheet" href="frog-v2.css" />
+  <link rel="stylesheet" href="pets-visible.css" />
+  <link rel="stylesheet" href="pet-fallback.css" />
+  <link rel="stylesheet" href="meganeura-digital-pet.css" />
+  <link rel="stylesheet" href="meganeura-image.css" />
+  <link rel="stylesheet" href="frog-pet.css" />
+  <link rel="stylesheet" href="pet-engine.css" />
+  <link rel="stylesheet" href="pet-assets.css" />
+</head>
+<body>
+  <section class="library-doors" id="libraryDoors" aria-hidden="true">
+    <div class="door door-left"><div class="door-panel"><span>OMARI'S</span><b>Digital<br>Library</b><i>Est. 2026</i></div></div>
+    <div class="door door-right"><div class="door-panel"><span>TURN THE HANDLE</span><b>Enter<br>the archive</b><i>Scroll to open</i></div></div>
+    <p class="door-instruction">Scroll to open the doors <span>↓</span></p>
+  </section>
+  <main>
+    <header class="site-header">
+      <a class="wordmark" href="#top" aria-label="Omari's Digital Library home">ODL</a>
+      <p class="collection-count"><span id="bookCount">15</span> VOLUMES / PERSONAL COLLECTION</p>
+      <button class="menu-button" id="menuButton" aria-expanded="false" aria-controls="menuPanel"><span></span><span></span><span></span><i>Browse</i></button>
+    </header>
+
+    <aside class="menu-panel" id="menuPanel" aria-hidden="true">
+      <div><p class="eyebrow">The index</p><h2>Find your next<br><em>chapter.</em></h2></div>
+      <nav id="genreNav" aria-label="Book genres"></nav>
+      <p class="menu-note">Select a category to filter the shelf.<br>Tap any spine to open its card.</p>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+
+    <section class="hero" id="top">
+      <p class="eyebrow">A personal archive</p>
+      <h1>Welcome to<br><em id="typewriter" aria-label="Omari's library"></em><span class="cursor" aria-hidden="true"></span></h1>
+      <p class="hero-copy">A living collection of ideas, stories, and the kind of books that change how you see the next page.</p>
+      <div class="hero-actions"><a href="#shelf" class="round-link">Explore the shelf <span>↓</span></a><a href="recommend.html" class="round-link round-link-secondary">Recommend a book <span>↗</span></a></div>
+    </section>
+
+    <section class="discovery" aria-label="Discover books">
+      <label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="Search the collection" autocomplete="off" /></label>
+      <div class="chips" id="chips"></div>
+    </section>
+
+    <section class="shelf-section" id="shelf">
+      <div class="section-heading"><p class="eyebrow" id="shelfEyebrow">The complete shelf</p><p id="resultLabel">15 books to get lost in</p></div>
+      <div class="shelf" id="shelfGrid" aria-live="polite"></div>
+      <div class="shelf-base"></div>
+    </section>
+
+    <section class="about">
+      <p class="eyebrow">The philosophy</p>
+      <p>Read widely. Keep what stays with you. Come back when you need a different way in.</p>
+    </section>
+  </main>
+  <div class="pet-dock" aria-hidden="true">
+    <div class="dock-meganeura meganeura"><i class="wing wing-one"></i><i class="wing wing-two"></i><i class="wing wing-three"></i><i class="wing wing-four"></i><i class="head"></i><i class="body"></i></div>
+    <div class="dock-frog library-frog"><i class="frog-leg frog-leg-left"></i><i class="frog-leg frog-leg-right"></i><i class="frog-body"></i><i class="frog-belly"></i><i class="frog-eye frog-eye-left"></i><i class="frog-eye frog-eye-right"></i><i class="frog-smile"></i></div>
+  </div>
+
+  <dialog class="book-dialog" id="bookDialog">
+    <button class="dialog-close" id="closeDialog" aria-label="Close book details">×</button>
+    <div class="dialog-cover-wrap">
+      <div class="dialog-spine" id="dialogSpine"></div>
+      <img class="dialog-cover" id="dialogCover" alt="" hidden />
+      <p class="cover-status" id="coverStatus" aria-live="polite">Finding cover…</p>
+    </div>
+    <div class="dialog-content"><p class="eyebrow" id="dialogGenre"></p><h2 id="dialogTitle"></h2><p class="author" id="dialogAuthor"></p><p class="description" id="dialogDescription"></p><div id="investorFramework"></div><p class="dialog-note">Part of Omari's Digital Library</p></div>
+  </dialog>
+  <script src="app.js"></script>
+  <script src="book-extras.js"></script>
+  <script src="library-doors.js"></script>
+  <script src="shelf-entry.js"></script>
+  <script src="domino-shelf.js"></script>
+  <script src="pet-engine.js"></script>
+</body>
+</html>

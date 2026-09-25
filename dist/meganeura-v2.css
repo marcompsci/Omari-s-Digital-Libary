@@ -1,0 +1,2 @@
+/* A larger, more cinematic flight companion. */
+.meganeura{width:108px;height:58px}.meganeura::before{content:"";position:absolute;z-index:-1;left:-43px;top:27px;width:53px;height:2px;background:linear-gradient(90deg,transparent,#91d0c899);filter:blur(1px)}.meganeura-flying .wing{animation-duration:58ms}.pet-dock .dock-meganeura{display:none}

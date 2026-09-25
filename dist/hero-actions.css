@@ -1,0 +1,1 @@
+.hero-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.hero-actions .round-link{margin-top:35px}.hero-actions .round-link-secondary{background:transparent;color:var(--ink)}.hero-actions .round-link-secondary:hover{background:var(--ink);color:var(--paper)}

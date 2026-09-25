@@ -1,0 +1,2 @@
+/* A more legible, page-wide hop and a clear corner-cling pose. */
+.library-frog{width:68px;height:54px}.frog-peeking{clip-path:inset(0 0 0 0)}.frog-peeking::before,.frog-peeking::after{content:"";position:absolute;z-index:-1;width:17px;height:8px;border-radius:70% 20% 30% 70%;background:#318d44;bottom:7px}.frog-peeking::before{left:-8px;transform:rotate(-28deg)}.frog-peeking::after{right:-8px;transform:scaleX(-1) rotate(-28deg)}.pet-dock .dock-frog{display:none}
