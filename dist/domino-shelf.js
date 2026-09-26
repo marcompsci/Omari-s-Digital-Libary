@@ -20,13 +20,16 @@ function startDomino() {
   // On the return journey only, let the books climb into the hero before the shelf leaves view.
   const inLiftZone = bounds.top > window.innerHeight * .32 && bounds.top < window.innerHeight * 1.04;
   shelfSection.classList.toggle('shelf-preview', movingUp && inLiftZone && dominoStarted);
-  const outsideTransition = bounds.top > window.innerHeight * 1.05 || bounds.bottom < window.innerHeight * .08;
-  if (outsideTransition) {
+  // Reset only after returning above the shelf. Never reset after scrolling
+  // through page two: that previously made a completed shelf disappear.
+  if (bounds.top > window.innerHeight * 1.08) {
     shelfSection.classList.remove('shelf-preview');
     if (dominoStarted) resetDomino();
     return;
   }
-  if (dominoStarted || bounds.top > window.innerHeight * .98) return;
+  // Begin just before the shelf reaches the viewport, so the domino effect is
+  // visible during the transition into page two.
+  if (dominoStarted || bounds.top > window.innerHeight * 1.08) return;
 
   dominoStarted = true;
   const currentEpoch = ++animationEpoch;
