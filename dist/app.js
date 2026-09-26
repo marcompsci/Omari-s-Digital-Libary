@@ -30,3 +30,4 @@ const dialog=document.querySelector('#bookDialog'),cover=document.querySelector(
 const menuButton=document.querySelector('#menuButton'),menu=document.querySelector('#menuPanel'),scrim=document.querySelector('#scrim');function closeMenu(){menu.classList.remove('open');scrim.classList.remove('visible');menuButton.setAttribute('aria-expanded','false');menu.setAttribute('aria-hidden','true');}menuButton.onclick=()=>{const open=!menu.classList.contains('open');menu.classList.toggle('open',open);scrim.classList.toggle('visible',open);menuButton.setAttribute('aria-expanded',open);menu.setAttribute('aria-hidden',!open)};scrim.onclick=closeMenu;
 const phrase="Omari’s library";let char=0;const typer=document.querySelector('#typewriter');(function type(){if(char<phrase.length){typer.textContent+=phrase[char++];setTimeout(type,char===1?280:72)}})();
 renderFilters();renderShelf();
+document.documentElement.classList.add('library-js-ready');
