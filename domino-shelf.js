@@ -8,6 +8,7 @@ let previousScrollY = window.scrollY;
 function resetDomino() {
   dominoStarted = false;
   animationEpoch += 1;
+  dominoShelf.classList.remove('is-dominoing');
   dominoShelf.querySelectorAll('.book').forEach(book => book.classList.remove('domino-up'));
   shelfBase.classList.remove('domino-ready');
 }
@@ -34,6 +35,7 @@ function startDomino() {
   if (dominoStarted || bounds.top > window.innerHeight * 1.08) return;
 
   dominoStarted = true;
+  dominoShelf.classList.add('is-dominoing');
   const currentEpoch = ++animationEpoch;
   const books = [...dominoShelf.querySelectorAll('.book')];
   books.forEach((book, index) => setTimeout(() => {
