@@ -12,12 +12,13 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css?v=20260926-4" />
   <style>
-    #shelfGrid{display:flex;align-items:flex-end;gap:5px;overflow-x:auto;overflow-y:hidden;padding:22px 13px 0;background:linear-gradient(to bottom,transparent 80%,#e4e0d9 80%)}
-    #shelfGrid>.shelf-spine{display:flex!important;visibility:visible!important;opacity:1!important;transform:none!important;filter:none!important;position:relative;flex:0 0 var(--spine-width);width:var(--spine-width);height:var(--spine-height);border:0;background:var(--spine-color);color:#fff;box-shadow:4px 1px 5px #3d322b48,inset 2px 0 #ffffff42,inset -3px 0 #00000025;cursor:pointer;overflow:hidden;isolation:isolate;padding:10px 4px;align-items:center;justify-content:space-between}
-    #shelfGrid>.shelf-spine::before{content:"";position:absolute;inset:5px 4px;border-top:1px solid #ffffff75;border-bottom:1px solid #0000004d;pointer-events:none}
-    .shelf-spine-author,.shelf-spine-title,.shelf-spine-mark{position:relative;writing-mode:vertical-rl;transform:rotate(180deg);text-transform:uppercase}
-    .shelf-spine-author{font:400 7px "DM Mono",monospace;letter-spacing:.08em;opacity:.82}.shelf-spine-title{font:500 13px/.85 "Playfair Display",Georgia,serif;letter-spacing:-.04em;max-height:80%;text-align:center}.shelf-spine-mark{font:400 8px "DM Mono",monospace;letter-spacing:.12em;opacity:.72}
-    #shelfGrid>.shelf-spine:hover{transform:translateY(-14px)!important}
+    #shelfGrid{display:flex;align-items:flex-end;justify-content:center;gap:7px;overflow-x:auto;overflow-y:hidden;padding:14px 25px 0;background:linear-gradient(to bottom,transparent 77%,#e4e0d9 77%)}
+    #shelfGrid>.shelf-spine{display:flex!important;visibility:visible!important;opacity:1!important;transform:none!important;filter:none!important;position:relative;flex:0 0 var(--spine-width);width:var(--spine-width);height:var(--spine-height);border:0;border-radius:0;background:linear-gradient(90deg,#00000013,transparent 10%,transparent 87%,#00000022),var(--spine-color);color:#fff;box-shadow:5px 2px 8px #3d322b45,inset 2px 0 #ffffff4a,inset -3px 0 #00000028;cursor:pointer;overflow:hidden;isolation:isolate;padding:15px 7px 11px;align-items:center;justify-content:space-between}
+    #shelfGrid>.shelf-spine::before{content:"";position:absolute;inset:10px 5px;border-top:1px solid #ffffff82;border-bottom:1px solid #00000058;pointer-events:none}
+    #shelfGrid>.shelf-spine::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,#ffffff00 0 4px,#0000000b 4px 5px);pointer-events:none}
+    .shelf-spine-author,.shelf-spine-title,.shelf-spine-mark{position:relative;z-index:1;writing-mode:vertical-rl;transform:rotate(180deg);text-transform:uppercase}
+    .shelf-spine-author{font:400 8px "DM Mono",monospace;letter-spacing:.09em;opacity:.85}.shelf-spine-title{font:500 16px/.82 "Playfair Display",Georgia,serif;letter-spacing:-.045em;max-height:78%;text-align:center}.shelf-spine-mark{font:400 9px "DM Mono",monospace;letter-spacing:.16em;opacity:.76}
+    #shelfGrid>.shelf-spine:hover{transform:translateY(-12px)!important;box-shadow:6px 10px 15px #3d322b42,inset 2px 0 #ffffff4a,inset -3px 0 #00000028}
   </style>
   <link rel="stylesheet" href="book-extras.css" />
   <link rel="stylesheet" href="library-doors.css" />
