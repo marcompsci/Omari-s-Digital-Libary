@@ -11,7 +11,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css?v=20260926-4" />
-  <style>#shelfGrid>.book{display:block!important;visibility:visible!important;opacity:1!important;transform:none!important;filter:none!important}</style>
+  <style>
+    #shelfGrid{display:flex;align-items:flex-end;gap:5px;overflow-x:auto;overflow-y:hidden;padding:22px 13px 0;background:linear-gradient(to bottom,transparent 80%,#e4e0d9 80%)}
+    #shelfGrid>.shelf-spine{display:flex!important;visibility:visible!important;opacity:1!important;transform:none!important;filter:none!important;position:relative;flex:0 0 var(--spine-width);width:var(--spine-width);height:var(--spine-height);border:0;background:var(--spine-color);color:#fff;box-shadow:4px 1px 5px #3d322b48,inset 2px 0 #ffffff42,inset -3px 0 #00000025;cursor:pointer;overflow:hidden;isolation:isolate;padding:10px 4px;align-items:center;justify-content:space-between}
+    #shelfGrid>.shelf-spine::before{content:"";position:absolute;inset:5px 4px;border-top:1px solid #ffffff75;border-bottom:1px solid #0000004d;pointer-events:none}
+    .shelf-spine-author,.shelf-spine-title,.shelf-spine-mark{position:relative;writing-mode:vertical-rl;transform:rotate(180deg);text-transform:uppercase}
+    .shelf-spine-author{font:400 7px "DM Mono",monospace;letter-spacing:.08em;opacity:.82}.shelf-spine-title{font:500 13px/.85 "Playfair Display",Georgia,serif;letter-spacing:-.04em;max-height:80%;text-align:center}.shelf-spine-mark{font:400 8px "DM Mono",monospace;letter-spacing:.12em;opacity:.72}
+    #shelfGrid>.shelf-spine:hover{transform:translateY(-14px)!important}
+  </style>
   <link rel="stylesheet" href="book-extras.css" />
   <link rel="stylesheet" href="library-doors.css" />
   <link rel="stylesheet" href="library-doors-v2.css" />
@@ -107,7 +114,7 @@
     </div>
     <div class="dialog-content"><p class="eyebrow" id="dialogGenre"></p><h2 id="dialogTitle"></h2><p class="author" id="dialogAuthor"></p><p class="description" id="dialogDescription"></p><div id="investorFramework"></div><p class="dialog-note">Part of Omari's Digital Library</p></div>
   </dialog>
-  <script src="app.js?v=20260926-3"></script>
+  <script src="app.js?v=20260926-5"></script>
   <script src="book-extras.js"></script>
   <script src="library-doors.js"></script>
   <script src="domino-shelf.js?v=20260926-3"></script>
