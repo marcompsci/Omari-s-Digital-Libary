@@ -32,7 +32,7 @@ class PetEngine {
   groundY() { return innerHeight - this.size() * .32; }
   topFlightY(y) { const s = this.size(); return clamp(y, s * .45, Math.max(s * .6, innerHeight * .35)); }
   onLibraryPageTwo() {
-    const discovery = document.querySelector('.discovery');
+    const discovery = document.querySelector('.discovery, .page2');
     return Boolean(discovery && discovery.getBoundingClientRect().top < innerHeight * .92);
   }
   welcomeTargets() {
