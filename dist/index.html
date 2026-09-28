@@ -6,7 +6,7 @@
 </head>
 <body>
 <div class="pixel-frog" id="pixelFrog" aria-hidden="true"><img src="assets/pixel-frog.png" alt=""></div>
-<div class="meganeura" id="meganeura" aria-hidden="true"><img src="assets/pixel-meganeura.png" alt=""></div>
+<div class="meganeura" id="meganeura" aria-hidden="true"><span class="pet-glow"></span><img src="assets/pixel-meganeura.png" alt=""></div>
 <title>Omari's Digital Library</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -359,10 +359,12 @@ footer{margin:100px auto 0;padding-block:28px 48px;border-top:1px solid var(--li
 .pixel-frog.is-peeking img{animation:frog-peek .7s steps(2,end) infinite alternate}
 @keyframes frog-hop{0%,100%{transform:translateY(0) scaleX(var(--frog-face,1)) scaleY(1)}35%{transform:translateY(-34%) scaleX(var(--frog-face,1)) scaleY(1.06)}55%{transform:translateY(-42%) scaleX(var(--frog-face,1)) scaleY(.98)}82%{transform:translateY(0) scaleX(var(--frog-face,1)) scaleY(.9)}}
 @keyframes frog-peek{from{transform:translateY(4%) scaleX(var(--frog-face,1)) rotate(-4deg)}to{transform:translateY(-7%) scaleX(var(--frog-face,1)) rotate(4deg)}}
-.meganeura{position:fixed;left:-220px;top:-220px;width:clamp(88px,11vw,154px);z-index:49;pointer-events:none;opacity:0;will-change:left,top,opacity;filter:drop-shadow(0 4px 8px rgba(127,185,255,.32))}
-.meganeura img{display:block;width:100%;height:auto;image-rendering:pixelated;image-rendering:crisp-edges;transform-origin:center;animation:meganeura-wingbeat .12s steps(2,end) infinite}
+.meganeura{position:fixed;left:-220px;top:-220px;width:clamp(88px,11vw,154px);z-index:49;pointer-events:none;opacity:0;isolation:isolate;will-change:left,top,opacity;filter:drop-shadow(0 4px 8px rgba(127,185,255,.32))}
+.meganeura img{position:relative;display:block;width:100%;height:auto;z-index:1;image-rendering:pixelated;image-rendering:crisp-edges;transform-origin:center;animation:meganeura-wingbeat .12s steps(2,end) infinite}
+.meganeura .pet-glow{position:absolute;left:17%;bottom:7%;width:66%;height:28%;z-index:0;border-radius:50%;pointer-events:none;background:rgba(164,215,255,.3);filter:blur(17px);animation:meganeura-glow .7s ease-in-out infinite alternate}
 .meganeura.is-away{opacity:0!important}
 @keyframes meganeura-wingbeat{from{transform:skewY(-1deg) scaleY(.97)}to{transform:skewY(1deg) scaleY(1.03)}}
+@keyframes meganeura-glow{from{transform:scale(.84);opacity:.46}to{transform:scale(1.15);opacity:.82}}
 .float{position:relative;margin:36px auto 0;max-width:900px;animation:hover 6s ease-in-out infinite}
 @keyframes hover{50%{transform:translateY(-7px)}}
 .piles{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:14px 28px;padding:0 24px;min-height:70px}
