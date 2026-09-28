@@ -6,6 +6,7 @@
 </head>
 <body>
 <div class="pixel-frog" id="pixelFrog" aria-hidden="true"><img src="assets/pixel-frog.png" alt=""></div>
+<div class="meganeura" id="meganeura" aria-hidden="true"><img src="assets/pixel-meganeura.png" alt=""></div>
 <title>Omari's Digital Library</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -358,6 +359,10 @@ footer{margin:100px auto 0;padding-block:28px 48px;border-top:1px solid var(--li
 .pixel-frog.is-peeking img{animation:frog-peek .7s steps(2,end) infinite alternate}
 @keyframes frog-hop{0%,100%{transform:translateY(0) scaleX(var(--frog-face,1)) scaleY(1)}35%{transform:translateY(-34%) scaleX(var(--frog-face,1)) scaleY(1.06)}55%{transform:translateY(-42%) scaleX(var(--frog-face,1)) scaleY(.98)}82%{transform:translateY(0) scaleX(var(--frog-face,1)) scaleY(.9)}}
 @keyframes frog-peek{from{transform:translateY(4%) scaleX(var(--frog-face,1)) rotate(-4deg)}to{transform:translateY(-7%) scaleX(var(--frog-face,1)) rotate(4deg)}}
+.meganeura{position:fixed;left:-220px;top:-220px;width:clamp(88px,11vw,154px);z-index:49;pointer-events:none;opacity:0;will-change:left,top,opacity;filter:drop-shadow(0 4px 8px rgba(127,185,255,.32))}
+.meganeura img{display:block;width:100%;height:auto;image-rendering:pixelated;image-rendering:crisp-edges;transform-origin:center;animation:meganeura-wingbeat .18s steps(2,end) infinite}
+.meganeura.is-away{opacity:0!important}
+@keyframes meganeura-wingbeat{from{transform:scaleY(.96) rotate(-1deg)}to{transform:scaleY(1.04) rotate(1deg)}}
 .float{position:relative;margin:36px auto 0;max-width:900px;animation:hover 6s ease-in-out infinite}
 @keyframes hover{50%{transform:translateY(-7px)}}
 .piles{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:14px 28px;padding:0 24px;min-height:70px}
@@ -1374,6 +1379,49 @@ $("#footCount").textContent = `${BOOKS.length} volumes · ${GENRES.length} genre
     }
   }
   wander();
+})();
+</script>
+<script>
+(() => {
+  const pet = document.getElementById("meganeura"), shelfPage = document.getElementById("shelfPage");
+  if (!pet || !shelfPage || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let flight = null, timer = null, onFirstPage = null;
+  const firstPageVisible = () => shelfPage.getBoundingClientRect().top > innerHeight * .62;
+  function stopFlight() {
+    clearTimeout(timer); timer = null;
+    flight?.cancel(); flight = null;
+    pet.classList.add("is-away");
+    pet.style.left = `${innerWidth + pet.offsetWidth}px`;
+  }
+  function fly() {
+    if (!firstPageVisible()) return stopFlight();
+    const width = pet.offsetWidth || 120;
+    const leftToRight = Math.random() > .5;
+    const start = leftToRight ? -width : innerWidth;
+    const end = leftToRight ? innerWidth : -width;
+    const y = Math.round(innerHeight * (.04 + Math.random() * .36));
+    const finishY = Math.max(18, Math.min(innerHeight * .46, y + (Math.random() * 150 - 75)));
+    pet.classList.remove("is-away");
+    pet.style.left = `${start}px`; pet.style.top = `${y}px`;
+    flight = pet.animate([
+      { left:`${start}px`, top:`${y}px`, opacity:0, transform:`scaleX(${leftToRight ? 1 : -1})` },
+      { left:`${start + (end-start)*.12}px`, top:`${y}px`, opacity:1, transform:`scaleX(${leftToRight ? 1 : -1})` },
+      { left:`${end}px`, top:`${finishY}px`, opacity:0, transform:`scaleX(${leftToRight ? 1 : -1})` }
+    ], { duration:1300, easing:"cubic-bezier(.25,.8,.35,1)", fill:"forwards" });
+    flight.finished.catch(()=>{}).then(() => {
+      if (!firstPageVisible()) return stopFlight();
+      timer = setTimeout(fly, 700);
+    });
+  }
+  function update() {
+    const next = firstPageVisible();
+    if (next === onFirstPage) return;
+    onFirstPage = next;
+    next ? fly() : stopFlight();
+  }
+  addEventListener("scroll", update, {passive:true});
+  addEventListener("resize", update, {passive:true});
+  update();
 })();
 </script>
 
