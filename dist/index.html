@@ -1197,7 +1197,7 @@ function flatBook(r, key){
   return el;
 }
 const piles = $("#piles");
-let recs = [], seen = null, isOwner = false, dbRef = null;
+let recs = [], seen = null, isOwner = false;
 function renderRecs(fresh){
   piles.querySelectorAll(".pile").forEach(p=>p.remove());
   $("#recsEmpty").hidden = recs.length>0;
@@ -1241,16 +1241,6 @@ function openRecCard(r, el){
   recCard.append(x, h4, by);
   if(r.note){ const n = document.createElement("p"); n.className = "note"; n.textContent = "“" + r.note + "”"; recCard.append(n); }
   const f = document.createElement("p"); f.className = "from"; f.textContent = "Recommended by " + (r.from || "a reader"); recCard.append(f);
-  if(isOwner && dbRef){
-    const rm = document.createElement("button"); rm.type="button"; rm.className="rm"; rm.textContent="Remove from shelf";
-    rm.onclick = async ()=>{
-      if(rm.dataset.sure !== "1"){ rm.dataset.sure = "1"; rm.textContent = "Click again to remove"; return; }
-      rm.disabled = true;
-      try{ await removeRec(r); closeRecCard(); }
-      catch(e){ rm.textContent = "Couldn't remove it. Try again."; rm.disabled = false; rm.dataset.sure = ""; }
-    };
-    recCard.append(rm);
-  }
   recCard.hidden = false; place(recCard, el, 14); x.focus({preventScroll:true});
 }
 function closeRecCard(){ recCard.hidden = true; }
@@ -1287,14 +1277,13 @@ form.addEventListener("submit", async e=>{
   const d = formData();
   msg.classList.remove("err");
   if(!d.title || !d.author){ msg.classList.add("err"); msg.textContent = "Add both the title and the author."; (d.title ? $("#recAuthor") : $("#recTitle")).focus(); return; }
-  if(!dbRef || !canWrite || !myId){ msg.classList.add("err"); msg.textContent = "Recommendations can't be saved from this view."; return; }
-  const mine = (docsById.get(myId) || []);
-  if(mine.length >= PER_PERSON){ msg.classList.add("err"); msg.textContent = `You've reached the limit of ${PER_PERSON} recommendations. Thanks for all of them!`; return; }
+  if(!canWrite){ msg.classList.add("err"); msg.textContent = "Recommendations are temporarily unavailable. Please try again later."; return; }
   if(Date.now() - lastSubmit < 15000){ msg.classList.add("err"); msg.textContent = "Give it a few seconds before adding another."; return; }
   submitBtn.disabled = true; msg.textContent = "Adding it to the shelf…";
   try{
-    const item = {...d, createdAt: Date.now()};
-    await dbRef.doc("recs/" + myId).set({items: [...mine.map(stripItem), item].slice(-PER_PERSON), updatedAt: Date.now()});
+    const item = await addRecommendation(d);
+    recs.push(item);
+    renderRecs(new Set([item.id]));
     lastSubmit = Date.now();
     msg.textContent = "";
     form.hidden = true; $("#recDone").hidden = false;
@@ -1302,56 +1291,40 @@ form.addEventListener("submit", async e=>{
     form.reset(); updatePreview();
   } catch(err){
     msg.classList.add("err");
-    msg.textContent = err && err.code === "invalid_argument"
-      ? "You need Contributor access to this page to recommend a book. Ask Omari to add you."
-      : err && err.code === "quota_exceeded" ? "The shelf is full right now." : "That didn't save. Check your connection and try again.";
-    if(err && err.code === "invalid_argument"){ canWrite = false; }
+    msg.textContent = "That didn't save. Check your connection and try again.";
   }
   submitBtn.disabled = !canWrite;
 });
 $("#another").addEventListener("click", ()=>{ $("#recDone").hidden = true; form.hidden = false; $("#recTitle").focus(); });
 
-/* ---------- Data layer: each person writes only their own document (recs/<their id>);
-   only the owner (and editors) can change anyone else's. Enforced server-side by the page's access rules. ---------- */
-const PER_PERSON = 10;
-let myId = null, lastSubmit = 0;
-const docsById = new Map();
+/* ---------- Supabase recommendations: public reads and insert-only visitor access ---------- */
+const SUPABASE_URL = "https://gqggrltumwajfyklypxjm.supabase.co";
+const SUPABASE_KEY = "sb_publishable_rFI4fKe-I1TweJe2ZSaRiw_txgXo4Id";
+let lastSubmit = 0;
 const clean = (v, max)=>String(v == null ? "" : v).replace(/[\u0000-\u001F\u007F\u200B-\u200F\u202A-\u202E\u2066-\u2069]/g, " ").replace(/\s+/g, " ").trim().slice(0, max);
-const stripItem = r=>({title:clean(r.title,90), author:clean(r.author,60), from:clean(r.from,40), note:clean(r.note,280), color:Math.max(0, Math.min(PALETTE.length-1, r.color|0)), createdAt:+r.createdAt||0});
-async function removeRec(r){
-  const list = (docsById.get(r.owner) || []).filter(x=>x.createdAt !== r.createdAt);
-  await dbRef.doc("recs/" + r.owner).set({items: list.map(stripItem), updatedAt: Date.now()});
+const headers = {apikey:SUPABASE_KEY, Authorization:`Bearer ${SUPABASE_KEY}`};
+const fromRow = row=>({id:String(row.id), title:row.title, author:row.author, from:row.recommender_name||"", note:row.note||"", color:row.color|0, createdAt:Date.parse(row.created_at)||Date.now()});
+async function requestSupabase(path, options={}){
+  const response = await fetch(SUPABASE_URL + "/rest/v1/" + path, {...options, headers:{...headers, ...(options.headers||{})}});
+  if(!response.ok) throw new Error("Supabase request failed");
+  return response.status === 204 ? null : response.json();
 }
-
+async function addRecommendation(d){
+  const rows = await requestSupabase("book_recommendations", {method:"POST", headers:{"Content-Type":"application/json", Prefer:"return=representation"}, body:JSON.stringify({title:clean(d.title,90), author:clean(d.author,60), recommender_name:clean(d.from,40), note:clean(d.note,280), color:Math.max(0,Math.min(PALETTE.length-1,d.color|0))})});
+  return fromRow(rows[0]);
+}
 (async ()=>{
-  const cl = window.claude;
-  const [db, user] = cl && cl.use ? await Promise.all([cl.use("db"), cl.use("user")]) : [null, null];
-  isOwner = user ? !!(await user.isOwner()) : false;
-  myId = user ? await user.id() : null;
-  if(!db){
+  try{
+    const rows = await requestSupabase("book_recommendations?select=id,title,author,recommender_name,note,color,created_at&order=created_at.asc");
+    recs = rows.map(fromRow);
+    seen = new Set(recs.map(r=>r.id));
+    renderRecs();
+    canWrite = true;
+  } catch(e){
+    canWrite = false;
     submitBtn.disabled = true;
-    msg.textContent = "Recommendations can't be saved from this view.";
     $("#recsEmpty").hidden = true;
-    return;
   }
-  dbRef = db;
-  const cw = user ? await user.can("data.write") : null;
-  canWrite = cw !== false && !!myId;
-  if(!canWrite){ submitBtn.disabled = true; msg.textContent = "You can browse the shelf, but recommending needs Contributor access. Ask Omari to add you."; }
-  db.collection("recs").limit(500).onSnapshot(snap=>{
-    docsById.clear();
-    const next = [];
-    snap.docs.forEach(d=>{
-      const v = d.data() || {};
-      const items = Array.isArray(v.items) ? v.items.slice(0, PER_PERSON).map(stripItem).filter(x=>x.title && x.author) : [];
-      docsById.set(d.id, items);
-      items.forEach(x=>next.push({...x, owner:d.id, id:d.id + "~" + x.createdAt}));
-    });
-    next.sort((a,b)=>a.createdAt - b.createdAt);
-    const fresh = seen ? new Set(next.filter(r=>!seen.has(r.id)).map(r=>r.id)) : null;
-    seen = new Set(next.map(r=>r.id));
-    recs = next; renderRecs(fresh);
-  }, ()=>{ $("#recsEmpty").textContent = "The recommendations shelf couldn't load. Refresh to try again."; });
 })();
 
 /* scroll-driven domino: books stand up one by one while page 1 scrolls into page 2 */
