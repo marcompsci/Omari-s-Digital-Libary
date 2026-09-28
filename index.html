@@ -3,8 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<link rel="stylesheet" href="pet-engine.css">
-<link rel="stylesheet" href="pet-assets.css">
 </head>
 <body>
 <title>Omari's Digital Library</title>
@@ -338,7 +336,7 @@ footer{margin:100px auto 0;padding-block:28px 48px;border-top:1px solid var(--li
 .rec-btn.solid:hover{background:var(--accent);border-color:var(--accent)}
 
 /* ---------- Reader recommendations shelf ---------- */
-.recs{position:absolute;left:max(54px,8vw);bottom:-220px;width:clamp(220px,18vw,290px);text-align:center;z-index:4;animation:fadeOnly 1s 1.2s both}
+.recs{position:absolute;left:max(16px,3vw);top:50%;transform:translateY(-50%);width:clamp(240px,22vw,310px);text-align:center;animation:fadeOnly 1s 1.2s both}
 @keyframes fadeOnly{from{opacity:0}to{opacity:1}}
 .recs .float{margin:0}
 .recs .piles{padding:0 12px;min-height:40px}
@@ -1336,6 +1334,5 @@ $("#footCount").textContent = `${BOOKS.length} volumes · ${GENRES.length} genre
 })();
 </script>
 
-<script src="pet-engine.js"></script>
 </body>
 </html>
