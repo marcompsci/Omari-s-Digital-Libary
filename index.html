@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 </head>
 <body>
+<div class="pixel-frog" aria-hidden="true"><img src="assets/pixel-frog.png" alt=""></div>
 <title>Omari's Digital Library</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -349,6 +350,12 @@ footer{margin:100px auto 0;padding-block:28px 48px;border-top:1px solid var(--li
 .recs-add{display:inline-block;margin-top:10px;font-family:var(--mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:3px}
 .recs-add:hover{color:var(--ink)}
 .page2-add{align-self:center;margin:30px auto 0}
+
+/* ---------- Bottom pixel pet ---------- */
+.pixel-frog{position:fixed;left:0;bottom:0;width:clamp(72px,9vw,128px);z-index:50;pointer-events:none;filter:drop-shadow(0 5px 4px rgba(0,0,0,.3));animation:frog-wander 16s linear infinite alternate}
+.pixel-frog img{display:block;width:100%;height:auto;image-rendering:pixelated;image-rendering:crisp-edges;transform-origin:center bottom;animation:frog-hop .66s steps(2,end) infinite}
+@keyframes frog-wander{from{transform:translateX(0)}to{transform:translateX(calc(100vw - 100%))}}
+@keyframes frog-hop{0%,100%{transform:translateY(0) scaleX(1) scaleY(1)}35%{transform:translateY(-34%) scaleX(.96) scaleY(1.06)}55%{transform:translateY(-42%) scaleX(1.04) scaleY(.98)}82%{transform:translateY(0) scaleX(1.09) scaleY(.9)}}
 .float{position:relative;margin:36px auto 0;max-width:900px;animation:hover 6s ease-in-out infinite}
 @keyframes hover{50%{transform:translateY(-7px)}}
 .piles{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:14px 28px;padding:0 24px;min-height:70px}
