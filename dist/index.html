@@ -360,9 +360,9 @@ footer{margin:100px auto 0;padding-block:28px 48px;border-top:1px solid var(--li
 @keyframes frog-hop{0%,100%{transform:translateY(0) scaleX(var(--frog-face,1)) scaleY(1)}35%{transform:translateY(-34%) scaleX(var(--frog-face,1)) scaleY(1.06)}55%{transform:translateY(-42%) scaleX(var(--frog-face,1)) scaleY(.98)}82%{transform:translateY(0) scaleX(var(--frog-face,1)) scaleY(.9)}}
 @keyframes frog-peek{from{transform:translateY(4%) scaleX(var(--frog-face,1)) rotate(-4deg)}to{transform:translateY(-7%) scaleX(var(--frog-face,1)) rotate(4deg)}}
 .meganeura{position:fixed;left:-220px;top:-220px;width:clamp(88px,11vw,154px);z-index:49;pointer-events:none;opacity:0;will-change:left,top,opacity;filter:drop-shadow(0 4px 8px rgba(127,185,255,.32))}
-.meganeura img{display:block;width:100%;height:auto;image-rendering:pixelated;image-rendering:crisp-edges;transform-origin:center;animation:meganeura-wingbeat .18s steps(2,end) infinite}
+.meganeura img{display:block;width:100%;height:auto;image-rendering:pixelated;image-rendering:crisp-edges;transform-origin:center;animation:meganeura-wingbeat .12s steps(2,end) infinite}
 .meganeura.is-away{opacity:0!important}
-@keyframes meganeura-wingbeat{from{transform:scaleY(.96) rotate(-1deg)}to{transform:scaleY(1.04) rotate(1deg)}}
+@keyframes meganeura-wingbeat{from{transform:skewY(-1deg) scaleY(.97)}to{transform:skewY(1deg) scaleY(1.03)}}
 .float{position:relative;margin:36px auto 0;max-width:900px;animation:hover 6s ease-in-out infinite}
 @keyframes hover{50%{transform:translateY(-7px)}}
 .piles{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:14px 28px;padding:0 24px;min-height:70px}
@@ -1383,45 +1383,36 @@ $("#footCount").textContent = `${BOOKS.length} volumes · ${GENRES.length} genre
 </script>
 <script>
 (() => {
-  const pet = document.getElementById("meganeura"), shelfPage = document.getElementById("shelfPage");
-  if (!pet || !shelfPage || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  let flight = null, timer = null, onFirstPage = null;
-  const firstPageVisible = () => shelfPage.getBoundingClientRect().top > innerHeight * .62;
-  function stopFlight() {
-    clearTimeout(timer); timer = null;
-    flight?.cancel(); flight = null;
-    pet.classList.add("is-away");
-    pet.style.left = `${innerWidth + pet.offsetWidth}px`;
+  const pet = document.getElementById("meganeura"), hero = document.querySelector(".hero"), title = document.querySelector(".tw");
+  if (!pet || !hero || !title || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let flight = null, timer = null, flightToken = 0;
+  const landingVisible = () => { const r = hero.getBoundingClientRect(); return r.top < innerHeight * .18 && r.bottom > innerHeight * .72; };
+  function route(points, duration, face) {
+    const token = ++flightToken;
+    pet.classList.remove("is-away");
+    pet.style.left = `${points[0].left}px`; pet.style.top = `${points[0].top}px`;
+    flight = pet.animate(points.map((p, index) => ({...p, opacity:index === 0 || index === points.length - 1 ? 0 : 1, transform:`scaleX(${face})`})), {duration, easing:"linear", fill:"forwards"});
+    flight.finished.catch(()=>{}).then(() => { if (token === flightToken) timer = setTimeout(fly, 700); });
+  }
+  function flyLandingRoute(width, height) {
+    const r = title.getBoundingClientRect();
+    const y = Math.max(14, r.top - height * .46);
+    const leftPeak = r.left + r.width * .13, middlePeak = r.left + r.width * .48;
+    route([{left:-width, top:y + 18}, {left:leftPeak - width * .5, top:y}, {left:middlePeak - width * .5, top:y - 5}, {left:innerWidth + width, top:y + 14}], 1300, 1);
+  }
+  function flyAnywhere(width) {
+    const leftToRight = Math.random() > .5, start = leftToRight ? -width : innerWidth, end = leftToRight ? innerWidth : -width;
+    const y = Math.round(innerHeight * (.03 + Math.random() * .18));
+    route([{left:start, top:y}, {left:start + (end-start)*.16, top:y, opacity:1}, {left:end, top:Math.max(12, y + (Math.random()*56-28))}], 1300, leftToRight ? 1 : -1);
   }
   function fly() {
-    if (!firstPageVisible()) return stopFlight();
-    const width = pet.offsetWidth || 120;
-    const leftToRight = Math.random() > .5;
-    const start = leftToRight ? -width : innerWidth;
-    const end = leftToRight ? innerWidth : -width;
-    const y = Math.round(innerHeight * (.04 + Math.random() * .36));
-    const finishY = Math.max(18, Math.min(innerHeight * .46, y + (Math.random() * 150 - 75)));
-    pet.classList.remove("is-away");
-    pet.style.left = `${start}px`; pet.style.top = `${y}px`;
-    flight = pet.animate([
-      { left:`${start}px`, top:`${y}px`, opacity:0, transform:`scaleX(${leftToRight ? 1 : -1})` },
-      { left:`${start + (end-start)*.12}px`, top:`${y}px`, opacity:1, transform:`scaleX(${leftToRight ? 1 : -1})` },
-      { left:`${end}px`, top:`${finishY}px`, opacity:0, transform:`scaleX(${leftToRight ? 1 : -1})` }
-    ], { duration:1300, easing:"cubic-bezier(.25,.8,.35,1)", fill:"forwards" });
-    flight.finished.catch(()=>{}).then(() => {
-      if (!firstPageVisible()) return stopFlight();
-      timer = setTimeout(fly, 700);
-    });
+    flight?.cancel(); clearTimeout(timer);
+    const width = pet.offsetWidth || 120, height = pet.offsetHeight || 90;
+    landingVisible() ? flyLandingRoute(width, height) : flyAnywhere(width);
   }
-  function update() {
-    const next = firstPageVisible();
-    if (next === onFirstPage) return;
-    onFirstPage = next;
-    next ? fly() : stopFlight();
-  }
-  addEventListener("scroll", update, {passive:true});
-  addEventListener("resize", update, {passive:true});
-  update();
+  addEventListener("scroll", () => { clearTimeout(timer); fly(); }, {passive:true});
+  addEventListener("resize", () => { clearTimeout(timer); fly(); }, {passive:true});
+  fly();
 })();
 </script>
 
