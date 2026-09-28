@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 </head>
 <body>
-<div class="pixel-frog" aria-hidden="true"><img src="assets/pixel-frog.png" alt=""></div>
+<div class="pixel-frog" id="pixelFrog" aria-hidden="true"><img src="assets/pixel-frog.png" alt=""></div>
 <title>Omari's Digital Library</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -352,10 +352,12 @@ footer{margin:100px auto 0;padding-block:28px 48px;border-top:1px solid var(--li
 .page2-add{align-self:center;margin:30px auto 0}
 
 /* ---------- Bottom pixel pet ---------- */
-.pixel-frog{position:fixed;left:0;bottom:0;width:clamp(72px,9vw,128px);z-index:50;pointer-events:none;filter:drop-shadow(0 5px 4px rgba(0,0,0,.3));animation:frog-wander 16s linear infinite alternate}
-.pixel-frog img{display:block;width:100%;height:auto;image-rendering:pixelated;image-rendering:crisp-edges;transform-origin:center bottom;animation:frog-hop .66s steps(2,end) infinite}
-@keyframes frog-wander{from{transform:translateX(0)}to{transform:translateX(calc(100vw - 100%))}}
-@keyframes frog-hop{0%,100%{transform:translateY(0) scaleX(1) scaleY(1)}35%{transform:translateY(-34%) scaleX(.96) scaleY(1.06)}55%{transform:translateY(-42%) scaleX(1.04) scaleY(.98)}82%{transform:translateY(0) scaleX(1.09) scaleY(.9)}}
+.pixel-frog{position:fixed;left:-150px;bottom:0;width:clamp(72px,9vw,128px);z-index:50;pointer-events:none;filter:drop-shadow(0 5px 4px rgba(0,0,0,.3));will-change:left,top,bottom}
+.pixel-frog img{display:block;width:100%;height:auto;image-rendering:pixelated;image-rendering:crisp-edges;transform-origin:center bottom;transform:scaleX(var(--frog-face,1))}
+.pixel-frog.is-hopping img{animation:frog-hop .66s steps(2,end) infinite}
+.pixel-frog.is-peeking img{animation:frog-peek .7s steps(2,end) infinite alternate}
+@keyframes frog-hop{0%,100%{transform:translateY(0) scaleX(var(--frog-face,1)) scaleY(1)}35%{transform:translateY(-34%) scaleX(var(--frog-face,1)) scaleY(1.06)}55%{transform:translateY(-42%) scaleX(var(--frog-face,1)) scaleY(.98)}82%{transform:translateY(0) scaleX(var(--frog-face,1)) scaleY(.9)}}
+@keyframes frog-peek{from{transform:translateY(4%) scaleX(var(--frog-face,1)) rotate(-4deg)}to{transform:translateY(-7%) scaleX(var(--frog-face,1)) rotate(4deg)}}
 .float{position:relative;margin:36px auto 0;max-width:900px;animation:hover 6s ease-in-out infinite}
 @keyframes hover{50%{transform:translateY(-7px)}}
 .piles{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:14px 28px;padding:0 24px;min-height:70px}
@@ -1336,6 +1338,42 @@ renderRows();
 $("#volCount").textContent = BOOKS.length;
 $("#yr").textContent = new Date().getFullYear();
 $("#footCount").textContent = `${BOOKS.length} volumes · ${GENRES.length} genres`;
+})();
+</script>
+<script>
+(() => {
+  const frog = document.getElementById("pixelFrog");
+  if (!frog || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const nap = ms => new Promise(resolve => setTimeout(resolve, ms));
+  const corner = (name, width, height) => ({
+    topLeft:     { left: -width * .27, top: 20, face: 1 },
+    topRight:    { left: innerWidth - width * .73, top: 20, face: -1 },
+    bottomLeft:  { left: -width * .22, top: innerHeight - height * .76, face: 1 },
+    bottomRight: { left: innerWidth - width * .78, top: innerHeight - height * .76, face: -1 }
+  })[name];
+  let cornerIndex = 0;
+  async function wander() {
+    while (document.body.contains(frog)) {
+      const width = frog.offsetWidth, height = frog.offsetHeight;
+      const leftToRight = Math.random() > .5;
+      const start = leftToRight ? -width : innerWidth;
+      const end = leftToRight ? innerWidth : -width;
+      frog.className = "pixel-frog is-hopping";
+      frog.style.cssText = `left:${start}px;bottom:0;top:auto;--frog-face:${leftToRight ? 1 : -1}`;
+      const crossing = frog.animate([{left:`${start}px`},{left:`${end}px`}], {duration:5000, easing:"linear", fill:"forwards"});
+      await crossing.finished;
+      crossing.cancel();
+      frog.style.left = `${end}px`;
+      const names = ["topLeft", "topRight", "bottomRight", "bottomLeft"];
+      const pose = corner(names[cornerIndex++ % names.length], width, height);
+      frog.className = "pixel-frog is-peeking";
+      frog.style.cssText = `left:${pose.left}px;top:${pose.top}px;bottom:auto;--frog-face:${pose.face}`;
+      await nap(2200);
+      frog.className = "pixel-frog";
+      await nap(900);
+    }
+  }
+  wander();
 })();
 </script>
 
