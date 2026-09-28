@@ -1331,7 +1331,7 @@ async function removeRec(r){
   if(!db){
     submitBtn.disabled = true;
     msg.textContent = "Recommendations can't be saved from this view.";
-    $("#recsEmpty").textContent = "Recommendations appear here when the page is opened on claude.ai.";
+    $("#recsEmpty").hidden = true;
     return;
   }
   dbRef = db;
