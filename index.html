@@ -336,7 +336,7 @@ footer{margin:100px auto 0;padding-block:28px 48px;border-top:1px solid var(--li
 .rec-btn.solid:hover{background:var(--accent);border-color:var(--accent)}
 
 /* ---------- Reader recommendations shelf ---------- */
-.recs{position:absolute;left:max(16px,3vw);top:50%;transform:translateY(-50%);width:clamp(240px,22vw,310px);text-align:center;animation:fadeOnly 1s 1.2s both}
+.recs{position:static;width:clamp(240px,22vw,310px);margin:44px auto 0;text-align:center;animation:fadeOnly 1s 1.2s both}
 @keyframes fadeOnly{from{opacity:0}to{opacity:1}}
 .recs .float{margin:0}
 .recs .piles{padding:0 12px;min-height:40px}
@@ -349,9 +349,6 @@ footer{margin:100px auto 0;padding-block:28px 48px;border-top:1px solid var(--li
 .recs-add{display:inline-block;margin-top:10px;font-family:var(--mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:3px}
 .recs-add:hover{color:var(--ink)}
 .page2-add{align-self:center;margin:30px auto 0}
-@media (max-width:1100px){
-  .recs{position:static;transform:none;margin:28px auto 0;order:10}
-}
 .float{position:relative;margin:36px auto 0;max-width:900px;animation:hover 6s ease-in-out infinite}
 @keyframes hover{50%{transform:translateY(-7px)}}
 .piles{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:14px 28px;padding:0 24px;min-height:70px}
@@ -485,14 +482,6 @@ fieldset.field{border:0;margin:0;padding:0}
     </h1>
     <p class="count reveal" style="animation-delay:.3s"><span id="volCount">15</span> volumes</p>
     <p class="lede reveal" style="animation-delay:.45s">What I've read, what shaped how I think about money, habits, and the stories worth staying up for.</p>
-    <aside class="recs" id="recs" aria-label="Books readers recommended to me">
-      <div class="float">
-        <div class="piles" id="piles"><p class="recs-empty" id="recsEmpty">No recommendations yet</p></div>
-        <div class="plank"></div>
-      </div>
-      <div class="float-shadow" aria-hidden="true"></div>
-      <p class="recs-more" id="recsMore" hidden></p>
-    </aside>
     <div class="hero-btns reveal" style="animation-delay:.6s">
       <a class="rec-btn solid" href="#shelfPage">Go to the shelf</a>
       <a class="rec-btn" href="#recommend">Recommend a book</a>
@@ -513,6 +502,14 @@ fieldset.field{border:0;margin:0;padding:0}
     <div class="empty" id="empty" hidden>Nothing on this shelf matches that.</div>
   </div>
   <p class="hint">Hover a spine to peek · click to pull it off the shelf</p>
+  <aside class="recs" id="recs" aria-label="Books readers recommended to me">
+    <div class="float">
+      <div class="piles" id="piles"><p class="recs-empty" id="recsEmpty">No recommendations yet</p></div>
+      <div class="plank"></div>
+    </div>
+    <div class="float-shadow" aria-hidden="true"></div>
+    <p class="recs-more" id="recsMore" hidden></p>
+  </aside>
   <a class="recs-add page2-add" href="#recommend">Add one</a>
 
   </section>
