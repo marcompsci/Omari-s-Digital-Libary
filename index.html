@@ -1352,11 +1352,9 @@ $("#footCount").textContent = `${BOOKS.length} volumes · ${GENRES.length} genre
   const frog = document.getElementById("pixelFrog");
   if (!frog || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const nap = ms => new Promise(resolve => setTimeout(resolve, ms));
-  const corner = (name, width, height) => ({
-    topLeft:     { left: -width * .27, top: 20, face: 1 },
-    topRight:    { left: innerWidth - width * .73, top: 20, face: -1 },
-    bottomLeft:  { left: -width * .22, top: innerHeight - height * .76, face: 1 },
-    bottomRight: { left: innerWidth - width * .78, top: innerHeight - height * .76, face: -1 }
+  const corner = (name, width) => ({
+    bottomLeft:  { left: -width * .22, face: 1 },
+    bottomRight: { left: innerWidth - width * .78, face: -1 }
   })[name];
   let cornerIndex = 0;
   async function wander() {
@@ -1371,10 +1369,10 @@ $("#footCount").textContent = `${BOOKS.length} volumes · ${GENRES.length} genre
       await crossing.finished;
       crossing.cancel();
       frog.style.left = `${end}px`;
-      const names = ["topLeft", "topRight", "bottomRight", "bottomLeft"];
-      const pose = corner(names[cornerIndex++ % names.length], width, height);
+      const names = ["bottomRight", "bottomLeft"];
+      const pose = corner(names[cornerIndex++ % names.length], width);
       frog.className = "pixel-frog is-peeking";
-      frog.style.cssText = `left:${pose.left}px;top:${pose.top}px;bottom:auto;--frog-face:${pose.face}`;
+      frog.style.cssText = `left:${pose.left}px;bottom:0;top:auto;--frog-face:${pose.face}`;
       await nap(4300);
       frog.className = "pixel-frog";
       await nap(900);
