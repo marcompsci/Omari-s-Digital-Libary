@@ -1373,7 +1373,7 @@ $("#footCount").textContent = `${BOOKS.length} volumes · ${GENRES.length} genre
       const pose = corner(names[cornerIndex++ % names.length], width, height);
       frog.className = "pixel-frog is-peeking";
       frog.style.cssText = `left:${pose.left}px;top:${pose.top}px;bottom:auto;--frog-face:${pose.face}`;
-      await nap(2200);
+      await nap(4300);
       frog.className = "pixel-frog";
       await nap(900);
     }
