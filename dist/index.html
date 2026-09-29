@@ -1310,7 +1310,7 @@ form.addEventListener("submit", async e=>{
 $("#another").addEventListener("click", ()=>{ $("#recDone").hidden = true; form.hidden = false; $("#recTitle").focus(); });
 
 /* ---------- Supabase recommendations: public reads and insert-only visitor access ---------- */
-const SUPABASE_URL = "https://gqggrltumwajfyklypxjm.supabase.co";
+const SUPABASE_URL = "https://gqgrltumwajfyklypxjm.supabase.co";
 const SUPABASE_KEY = "sb_publishable_rFI4fKe-I1TweJe2ZSaRiw_txgXo4Id";
 let lastSubmit = 0;
 const clean = (v, max)=>String(v == null ? "" : v).replace(/[\u0000-\u001F\u007F\u200B-\u200F\u202A-\u202E\u2066-\u2069]/g, " ").replace(/\s+/g, " ").trim().slice(0, max);
