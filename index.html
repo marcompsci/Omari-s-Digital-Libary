@@ -680,7 +680,7 @@ fieldset.field{border:0;margin:0;padding:0}
         <p id="creatorPreviewCount">0 books</p>
         <div class="mini-spines" id="creatorSpines" aria-hidden="true"></div>
       </div>
-      <button class="ghost-btn" id="copyLibraryLink" type="button">Copy your library link</button>
+      <button class="ghost-btn" id="copyLibraryLink" type="button">Publish &amp; copy library link</button>
       <p class="share-msg" id="creatorShareMsg" role="status"></p>
     </aside>
   </div>
@@ -1237,7 +1237,7 @@ addEventListener("resize", ()=>requestScrub());
 const mainEl = $("#top"), rpage = $("#recommendPage"), cpage = $("#catalogue"), createPage = $("#createPage"), catBtn = document.querySelector(".cat-btn");
 let stopRp = ()=>{};
 function route(){
-  const rawHash = location.hash.slice(1), [h, sharedDraft] = rawHash.split("?d=");
+  const rawHash = location.hash.slice(1), [h, rawParams] = rawHash.split("?"), sharedParams = new URLSearchParams(rawParams || ""), sharedDraft = sharedParams.get("d"), sharedLibraryId = sharedParams.get("library");
   const page = h === "recommend" ? rpage : h === "catalogue" ? cpage : h === "create" ? createPage : null;
   catBtn.setAttribute("aria-current", page===cpage ? "page" : "false");
   if(page){
@@ -1251,7 +1251,7 @@ function route(){
       setTimeout(()=>$("#recTitle").focus({preventScroll:true}), 400);
     } else {
       if(page===cpage) stopRp = typewrite($("#cpType"), "My Catalogue", 75);
-      if(page===createPage){ loadCreatorDraft(sharedDraft); setTimeout(()=>$("#creatorName").focus({preventScroll:true}), 150); }
+      if(page===createPage){ loadCreatorDraft(sharedDraft, sharedLibraryId); setTimeout(()=>$("#creatorName").focus({preventScroll:true}), 150); }
     }
   } else {
     const wasHidden = mainEl.hidden;
@@ -1283,10 +1283,15 @@ function renderCreator(){
   creatorSpines.innerHTML = "";
   creatorDraft.books.slice(0,12).forEach((_,index)=>{ const spine=document.createElement("span"); spine.style.setProperty("--mini-c",creatorPalette[index%creatorPalette.length]); spine.style.setProperty("--mini-h",`${48+(index%4)*12}px`); creatorSpines.append(spine); });
 }
-function loadCreatorDraft(encoded){ creatorDraft=readCreatorDraft(encoded); renderCreator(); creatorShareMsg.textContent=""; }
-$("#creatorForm").addEventListener("submit",event=>{ event.preventDefault(); const title=creatorTitle.value.trim().slice(0,90), author=creatorAuthor.value.trim().slice(0,60); if(!title||!author){ creatorShareMsg.textContent="Add both a title and author."; return; } creatorDraft.name=creatorName.value.trim().slice(0,70); creatorDraft.books.push({title,author}); creatorTitle.value=""; creatorAuthor.value=""; creatorShareMsg.textContent="Book added to your library."; renderCreator(); creatorTitle.focus(); });
+async function loadCreatorDraft(encoded, libraryId){
+  creatorDraft=readCreatorDraft(encoded); renderCreator(); creatorShareMsg.textContent="";
+  if(!libraryId) return;
+  await Promise.resolve();
+  try{ const rows=await requestSupabase(`shared_libraries?select=library_name,books&id=eq.${encodeURIComponent(libraryId)}&limit=1`); const row=rows[0]; if(!row) throw new Error("missing"); creatorDraft={name:String(row.library_name||"").slice(0,70),books:Array.isArray(row.books)?row.books.slice(0,50).map(book=>({title:String(book.title||"").slice(0,90),author:String(book.author||"").slice(0,60)})).filter(book=>book.title&&book.author):[]}; renderCreator(); creatorShareMsg.textContent="This shared library is public and ready to explore."; }catch(e){ creatorShareMsg.textContent="This library could not be loaded. The link may be incomplete."; }
+}
+$("#creatorForm").addEventListener("submit",event=>{ event.preventDefault(); const title=creatorTitle.value.trim().slice(0,90), author=creatorAuthor.value.trim().slice(0,60); if(!title||!author){ creatorShareMsg.textContent="Add both a title and author."; return; } if(creatorDraft.books.length>=50){ creatorShareMsg.textContent="A library can hold up to 50 books for now."; return; } creatorDraft.name=creatorName.value.trim().slice(0,70); creatorDraft.books.push({title,author}); creatorTitle.value=""; creatorAuthor.value=""; creatorShareMsg.textContent="Book added to your library."; renderCreator(); creatorTitle.focus(); });
 creatorName.addEventListener("input",()=>{ creatorDraft.name=creatorName.value.trim().slice(0,70); renderCreator(); });
-$("#copyLibraryLink").addEventListener("click",async()=>{ creatorDraft.name=creatorName.value.trim().slice(0,70); const payload=btoa(unescape(encodeURIComponent(JSON.stringify(creatorDraft)))); const url=`${location.origin}${location.pathname}#create?d=${encodeURIComponent(payload)}`; try{ await navigator.clipboard.writeText(url); creatorShareMsg.textContent="Your library link is copied—share it to help promote Bookmark Buddyy."; }catch(e){ creatorShareMsg.textContent="Copy this link from your browser’s address bar."; history.replaceState(null,"",`#create?d=${encodeURIComponent(payload)}`); } });
+$("#copyLibraryLink").addEventListener("click",async()=>{ creatorDraft.name=creatorName.value.trim().slice(0,70); if(!creatorDraft.name){ creatorShareMsg.textContent="Name your library before publishing it."; creatorName.focus(); return; } if(!creatorDraft.books.length){ creatorShareMsg.textContent="Add at least one book before publishing it."; creatorTitle.focus(); return; } const button=$("#copyLibraryLink"); button.disabled=true; creatorShareMsg.textContent="Publishing your library…"; try{ const rows=await requestSupabase("shared_libraries",{method:"POST",headers:{"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify({library_name:clean(creatorDraft.name,70),books:creatorDraft.books.map(book=>({title:clean(book.title,90),author:clean(book.author,60)}))})}); const url=`${location.origin}${location.pathname}#create?library=${encodeURIComponent(rows[0].id)}`; await navigator.clipboard.writeText(url); creatorShareMsg.textContent="Your public library link is copied—share it to help promote Bookmark Buddyy."; }catch(e){ creatorShareMsg.textContent="Your library could not be published yet. Please try again."; } button.disabled=false; });
 renderCreator();
 route();
 requestScrub();
