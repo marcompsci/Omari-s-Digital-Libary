@@ -454,9 +454,32 @@ fieldset.field{border:0;margin:0;padding:0}
 .ghost-btn{padding:14px 26px;border-radius:999px;border:1px solid var(--line);font-family:var(--mono);font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-2);text-decoration:none}
 .ghost-btn:hover{border-color:var(--ink-2);color:var(--ink)}
 .done .submit{text-decoration:none;margin:0}
+.dr-create{margin-bottom:2px}
+.dr-create a{display:block;width:100%;padding:14px 16px;border:1px solid var(--accent);color:var(--accent);text-align:center;text-decoration:none;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;transition:background .2s,color .2s}
+.dr-create a:hover{background:var(--accent);color:var(--ground)}
+.builder-shell{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.8fr);gap:clamp(28px,6vw,74px);align-items:start}
+.builder-panel{padding:28px;border:1px solid var(--line);background:var(--panel)}
+.builder-panel h2{margin:0 0 8px;font-family:var(--display);font-size:32px;font-style:italic;font-weight:400}
+.builder-panel > p{margin:0 0 24px;color:var(--ink-2);line-height:1.5}
+.builder-books{display:flex;flex-direction:column;gap:8px;margin:4px 0 20px;padding:0;list-style:none}
+.builder-books li{display:flex;justify-content:space-between;gap:14px;align-items:baseline;border-bottom:1px solid var(--line);padding:9px 0;font-family:var(--display);font-size:20px}
+.builder-books small{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--muted)}
+.builder-books button{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.builder-preview{position:sticky;top:80px;min-height:330px;padding:30px 24px;background:#191815;color:#F5F1E9;border:1px solid #403d37}
+.builder-preview .cap{margin:0 0 26px;font-family:var(--mono);font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:#AAA39A}
+.mini-library{padding:28px 18px 18px;border:1px solid rgba(245,241,233,.22);min-height:210px}
+.mini-library h2{margin:0 0 26px;font-family:var(--display);font-style:italic;font-size:clamp(32px,4vw,52px);font-weight:400;line-height:.95;overflow-wrap:anywhere}
+.mini-library p{margin:0 0 14px;font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#DCA77E}
+.mini-spines{height:92px;display:flex;align-items:end;gap:5px;border-bottom:6px solid #8A6B55;padding:0 8px}
+.mini-spines span{display:block;width:18px;min-width:12px;height:var(--mini-h);background:var(--mini-c);box-shadow:inset -2px 0 rgba(0,0,0,.18)}
+.builder-preview .ghost-btn{margin-top:22px;color:#F5F1E9;border-color:rgba(245,241,233,.36)}
+.builder-preview .ghost-btn:hover{border-color:#F5F1E9;color:#F5F1E9}
+.share-msg{min-height:1.4em;margin:12px 0 0;font-size:13px;color:#DCA77E}
 @media (max-width:820px){
   .rgrid{grid-template-columns:1fr}
   .preview{position:static;order:-1}
+  .builder-shell{grid-template-columns:1fr}
+  .builder-preview{position:static}
 }
 
 @media (max-width:720px){
@@ -484,6 +507,7 @@ fieldset.field{border:0;margin:0;padding:0}
 
 <div id="drawerVeil" class="drawer-veil" hidden></div>
 <nav id="drawer" class="drawer" aria-label="Library menu" hidden>
+  <div class="dr-create"><a href="#create" data-close>Create your own library</a></div>
   <div>
     <p class="dr-label">Genres</p>
     <ul class="dr-list" id="drGenres"></ul>
@@ -618,6 +642,47 @@ fieldset.field{border:0;margin:0;padding:0}
       <div class="pile" id="previewPile"></div>
       <div class="plank"></div>
     </div>
+  </div>
+</section>
+
+<section class="rpage" id="createPage" aria-labelledby="createTitle" hidden>
+  <a class="back" href="#top">← Back to the library</a>
+  <div class="rpage-head">
+    <p class="eyebrow" style="animation:none">Bookmark Buddyy</p>
+    <h1 id="createTitle">Create your own library</h1>
+    <p>Bookmark Buddyy is coming to the App Store soon. Until then, make a personal web version of this library template: name it, add your books, and share it to help spread the word.</p>
+  </div>
+  <div class="builder-shell">
+    <div class="builder-panel">
+      <h2>Your collection</h2>
+      <p>Only your library name and book list change. The template stays recognizably yours.</p>
+      <form class="rform" id="creatorForm" novalidate>
+        <div class="field">
+          <label for="creatorName">Library name</label>
+          <input id="creatorName" maxlength="70" placeholder="Your Digital Library" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="creatorBookTitle">Add a book</label>
+          <input id="creatorBookTitle" maxlength="90" placeholder="Book title" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="creatorBookAuthor">Author</label>
+          <input id="creatorBookAuthor" maxlength="60" placeholder="Author name" autocomplete="off">
+        </div>
+        <button class="submit" type="submit">Add book</button>
+      </form>
+      <ul class="builder-books" id="creatorBooks" aria-label="Your books"></ul>
+    </div>
+    <aside class="builder-preview" aria-label="Your library preview">
+      <p class="cap">Your digital library</p>
+      <div class="mini-library">
+        <h2 id="creatorPreviewName">Your Digital Library</h2>
+        <p id="creatorPreviewCount">0 books</p>
+        <div class="mini-spines" id="creatorSpines" aria-hidden="true"></div>
+      </div>
+      <button class="ghost-btn" id="copyLibraryLink" type="button">Copy your library link</button>
+      <p class="share-msg" id="creatorShareMsg" role="status"></p>
+    </aside>
   </div>
 </section>
 
@@ -1169,27 +1234,28 @@ addEventListener("scroll", ()=>requestScrub(), {passive:true});
 addEventListener("resize", ()=>requestScrub());
 
 /* ---------- Routing: library vs. recommend page ---------- */
-const mainEl = $("#top"), rpage = $("#recommendPage"), cpage = $("#catalogue"), catBtn = document.querySelector(".cat-btn");
+const mainEl = $("#top"), rpage = $("#recommendPage"), cpage = $("#catalogue"), createPage = $("#createPage"), catBtn = document.querySelector(".cat-btn");
 let stopRp = ()=>{};
 function route(){
-  const h = location.hash.slice(1);
-  const page = h === "recommend" ? rpage : h === "catalogue" ? cpage : null;
+  const rawHash = location.hash.slice(1), [h, sharedDraft] = rawHash.split("?d=");
+  const page = h === "recommend" ? rpage : h === "catalogue" ? cpage : h === "create" ? createPage : null;
   catBtn.setAttribute("aria-current", page===cpage ? "page" : "false");
   if(page){
     if(state.open>-1) closeBook();
     document.getElementById("recCard").hidden = true; hideTip();
-    mainEl.hidden = true; rpage.hidden = page!==rpage; cpage.hidden = page!==cpage;
+    mainEl.hidden = true; rpage.hidden = page!==rpage; cpage.hidden = page!==cpage; createPage.hidden = page!==createPage;
     window.scrollTo(0,0);
     stopRp();
     if(page===rpage){
       stopRp = typewrite($("#rpType"), "Recommend a book", 70);
       setTimeout(()=>$("#recTitle").focus({preventScroll:true}), 400);
     } else {
-      stopRp = typewrite($("#cpType"), "My Catalogue", 75);
+      if(page===cpage) stopRp = typewrite($("#cpType"), "My Catalogue", 75);
+      if(page===createPage){ loadCreatorDraft(sharedDraft); setTimeout(()=>$("#creatorName").focus({preventScroll:true}), 150); }
     }
   } else {
     const wasHidden = mainEl.hidden;
-    rpage.hidden = true; cpage.hidden = true; mainEl.hidden = false;
+    rpage.hidden = true; cpage.hidden = true; createPage.hidden = true; mainEl.hidden = false;
     if(wasHidden){
       const t = h && document.getElementById(h);
       requestAnimationFrame(()=>{ if(t) t.scrollIntoView({block: h==="recs" ? "center" : "start"}); else window.scrollTo(0,0); requestScrub(); });
@@ -1197,6 +1263,31 @@ function route(){
   }
 }
 addEventListener("hashchange", route);
+
+/* ---------- Bookmark Buddyy library-maker preview ---------- */
+const creatorName = $("#creatorName"), creatorTitle = $("#creatorBookTitle"), creatorAuthor = $("#creatorBookAuthor"), creatorBooks = $("#creatorBooks"), creatorSpines = $("#creatorSpines"), creatorPreviewName = $("#creatorPreviewName"), creatorPreviewCount = $("#creatorPreviewCount"), creatorShareMsg = $("#creatorShareMsg");
+let creatorDraft = {name:"", books:[]};
+const creatorPalette = ["#C37A5E","#223E40","#D7A72C","#785DAB","#B34332","#6D8B74","#A98750","#E5D6B7"];
+function readCreatorDraft(encoded){
+  if(!encoded) return {name:"",books:[]};
+  try{ const d = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(encoded))))); return {name:typeof d.name === "string" ? d.name.slice(0,70) : "", books:Array.isArray(d.books) ? d.books.slice(0,20).map(b=>({title:String(b.title||"").slice(0,90),author:String(b.author||"").slice(0,60)})).filter(b=>b.title&&b.author) : []}; }catch(e){ return {name:"",books:[]}; }
+}
+function renderCreator(){
+  const name = creatorDraft.name.trim() || "Your Digital Library";
+  creatorName.value = creatorDraft.name;
+  creatorPreviewName.textContent = name;
+  creatorPreviewCount.textContent = `${creatorDraft.books.length} ${creatorDraft.books.length === 1 ? "book" : "books"}`;
+  creatorBooks.innerHTML = "";
+  creatorDraft.books.forEach((book,index)=>{ const li=document.createElement("li"), text=document.createElement("span"), meta=document.createElement("small"), remove=document.createElement("button"); text.textContent=book.title; meta.textContent=book.author; remove.type="button"; remove.textContent="Remove"; remove.onclick=()=>{creatorDraft.books.splice(index,1);renderCreator();}; li.append(text,meta,remove); creatorBooks.append(li); });
+  if(!creatorDraft.books.length){ const li=document.createElement("li"); li.innerHTML="<small>Your books will appear here.</small>"; creatorBooks.append(li); }
+  creatorSpines.innerHTML = "";
+  creatorDraft.books.slice(0,12).forEach((_,index)=>{ const spine=document.createElement("span"); spine.style.setProperty("--mini-c",creatorPalette[index%creatorPalette.length]); spine.style.setProperty("--mini-h",`${48+(index%4)*12}px`); creatorSpines.append(spine); });
+}
+function loadCreatorDraft(encoded){ creatorDraft=readCreatorDraft(encoded); renderCreator(); creatorShareMsg.textContent=""; }
+$("#creatorForm").addEventListener("submit",event=>{ event.preventDefault(); const title=creatorTitle.value.trim().slice(0,90), author=creatorAuthor.value.trim().slice(0,60); if(!title||!author){ creatorShareMsg.textContent="Add both a title and author."; return; } creatorDraft.name=creatorName.value.trim().slice(0,70); creatorDraft.books.push({title,author}); creatorTitle.value=""; creatorAuthor.value=""; creatorShareMsg.textContent="Book added to your library."; renderCreator(); creatorTitle.focus(); });
+creatorName.addEventListener("input",()=>{ creatorDraft.name=creatorName.value.trim().slice(0,70); renderCreator(); });
+$("#copyLibraryLink").addEventListener("click",async()=>{ creatorDraft.name=creatorName.value.trim().slice(0,70); const payload=btoa(unescape(encodeURIComponent(JSON.stringify(creatorDraft)))); const url=`${location.origin}${location.pathname}#create?d=${encodeURIComponent(payload)}`; try{ await navigator.clipboard.writeText(url); creatorShareMsg.textContent="Your library link is copied—share it to help promote Bookmark Buddyy."; }catch(e){ creatorShareMsg.textContent="Copy this link from your browser’s address bar."; history.replaceState(null,"",`#create?d=${encodeURIComponent(payload)}`); } });
+renderCreator();
 route();
 requestScrub();
 
